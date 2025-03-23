@@ -14,13 +14,15 @@ class Book(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(), nullable=False)
-    author = db.Column(db.String(), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('author.id'), nullable=False)
+    author_name = db.Column(db.String(), nullable=False)
     is_available = db.Column(db.Boolean(), nullable=False)
     type = db.Column(db.String(), nullable=False)
 
-    def __init__(self, name, author, is_available, type):
+    def __init__(self, name, author_id, is_available, type):
         self.name = name
-        self.author = author
+        self.author_id = author_id
+        self.author_name = Author.query.filter(Author.id == author_id).first().name
         self.is_available = is_available
         self.type = type
 
@@ -29,9 +31,10 @@ class Book(db.Model):
         if request.method == 'POST':
             if request.is_json:
                 data = request.get_json()
+
                 book = Book(
                     name=data['name'],
-                    author=data['author'],
+                    author_id=data['author_id'],
                     is_available=data['is_available'],
                     type=data['type'],
                 )
@@ -46,12 +49,13 @@ class Book(db.Model):
             results = [
             {
                 'name': book.name,
-                'author': book.author,
+                'author_id': book.author_id,
+                'author_name': book.author_name,
                 'is_available': book.is_available,
                 'type': book.type,
             } for book in books]
 
-        return {"Count": len(results), "Books": results}
+        return {"count": len(results), "books": results}
     
 
     @app.route('/books/<book_id>', methods=['GET', 'PATCH', 'DELETE'])
@@ -61,7 +65,8 @@ class Book(db.Model):
         if request.method == 'GET':
             response = {
                 'name': book.name,
-                'author': book.author,
+                'author_id': book.author_id,
+                'author_name': book.author_name,
                 'is_available': book.is_available,
                 'type': book.type,
             }
@@ -85,12 +90,13 @@ class Book(db.Model):
         results = [
             {
                 'name': book.name,
-                'author': book.author,
+                'author_id': book.author_id,
+                'author_name': book.author_name,
                 'is_available': book.is_available,
                 'type': book.type,
             } for book in books]
 
-        return {"Count": len(results), "Books": results}
+        return {"count": len(results), "books": results}
 
     @app.route('/books/search', methods=['GET'])
     def search_book():
@@ -101,8 +107,8 @@ class Book(db.Model):
             query = query.filter(or_(*[Book.name.ilike(f"%{name}%") for name in params['name']]))
 
         if 'author' in params:
-            query = query.filter(or_(*[Book.author.ilike(f"%{author}%") for author in params['author']]))
-        
+            query = query.filter(or_(*[Book.author_name.ilike(f"%{author}%") for author in params['author']]))
+
         if 'type' in params:
             query = query.filter(or_(*[Book.type.ilike(f"%{type}%") for type in params['type']]))
 
@@ -110,12 +116,85 @@ class Book(db.Model):
         results = [
             {
                 'name': book.name,
-                'author': book.author,
+                'author_id': book.author_id,
+                'author_name': book.author_name,
                 'is_available': book.is_available,
                 'type': book.type,
             } for book in books]
 
-        return {"Count": len(results), "Books": results}
+        return {"count": len(results), "books": results}
+
+class Author(db.Model):
+    __tablename__ = 'author'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(), nullable=False)
+    books = db.relationship('Book', backref='author', lazy=True)
+
+    def __init__(self, name):
+        self.name = name
+
+    @app.route('/authors', methods=['POST', 'GET'])
+    def handle_authors():
+        if request.method == 'POST':
+            if request.is_json:
+                data = request.get_json()
+                author = Author(
+                    name=data['name'],
+                )
+                db.session.add(author)
+                db.session.commit()
+                return {"message": f"Author {author.name} has been created successfully."}
+            else:
+                return {"error": "The request payload is not in JSON format"}
+
+        elif request.method == 'GET':
+            authors = Author.query.all()
+            results = [
+            {
+                'name': author.name,
+                'book_ids': [book.id for book in author.books],
+            } for author in authors]
+
+        return {"count": len(results), "authors": results}
+    
+    @app.route('/authors/<author_id>', methods=['GET', 'PATCH', 'DELETE'])
+    def update_author(author_id):
+        author = Author.query.get_or_404(author_id)
+
+        if request.method == 'GET':
+            response = {
+                'name': author.name,
+                'id': author.id,
+                'books': [book.id for book in author.books],
+            }
+            return {"message": "Success", "author": response}
+
+        elif request.method == 'PATCH':
+            data = request.get_json()
+            for key, value in data.items():
+                setattr(author, key, value)
+            db.session.commit()
+            return {"message": f"Author {author.name} successfully updated"}
+
+        elif request.method == 'DELETE':
+            db.session.delete(author)
+            db.session.commit()
+            return {"message": f"Author {author.name} successfully deleted."}
+        
+    @app.route('/authors/<author_id>/books', methods=['GET'])
+    def search_book_by_author(author_id):
+        author = Author.query.get_or_404(author_id)
+
+        results = [
+            {
+                'name': author.name,
+                'books': [book.id for book in author.books],
+            }
+        ]
+
+        return {'message': 'Success', 'books': results}
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
