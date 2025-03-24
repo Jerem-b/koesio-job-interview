@@ -2,7 +2,6 @@ from flask import Blueprint, request
 from app import db
 from models.authors import Author
 
-
 author_routes = Blueprint('authors', __name__)
 
 @author_routes.route('/authors', methods=['POST', 'GET'])

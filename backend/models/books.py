@@ -10,6 +10,7 @@ class Book(db.Model):
     author_name = db.Column(db.String(), nullable=False)
     is_available = db.Column(db.Boolean(), nullable=False)
     type = db.Column(db.String(), nullable=False)
+    borrowed_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
 
     def __init__(self, name, author_id, is_available, type):
         self.name = name

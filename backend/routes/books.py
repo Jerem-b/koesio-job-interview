@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from sqlalchemy import or_
 from app import db
 from models.books import Book
@@ -32,6 +32,7 @@ def handle_books():
             'author_id': book.author_id,
             'author_name': book.author_name,
             'is_available': book.is_available,
+            'borrowed_by': book.borrowed_by,
             'type': book.type,
         } for book in books]
 
@@ -49,6 +50,7 @@ def update_book(book_id):
             'author_id': book.author_id,
             'author_name': book.author_name,
             'is_available': book.is_available,
+            'borrowed_by': book.borrowed_by,
             'type': book.type,
         }
         return {"message": "Success", "book": response}
@@ -75,6 +77,7 @@ def get_available_books():
             'author_id': book.author_id,
             'author_name': book.author_name,
             'is_available': book.is_available,
+            'borrowed_by': book.borrowed_by,
             'type': book.type,
         } for book in books]
 
@@ -102,6 +105,7 @@ def search_book():
             'author_id': book.author_id,
             'author_name': book.author_name,
             'is_available': book.is_available,
+            'borrowed_by': book.borrowed_by,
             'type': book.type,
         } for book in books]
 
