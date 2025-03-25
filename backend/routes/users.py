@@ -17,7 +17,7 @@ def register():
         db.session.commit()
         return {"message": f"User {user.username} has been created successfully."}
     else:
-        return {"error": "The request payload is not in JSON format"}
+        return {"error": "The request payload is not in JSON format."}
 
 @user_routes.route('/login', methods=['POST'])
 def login():
@@ -28,9 +28,9 @@ def login():
         if check_password_hash(user.password, data['password']):
             return {"message": f"User {user.username} sucessfully login."}
         else:
-            return {"error": "Invalid username or password"}
+            return {"error": "Invalid username or password."}
     else:
-        return {"error": "The request payload is not in JSON format"}
+        return {"error": "The request payload is not in JSON format."}
     
 @user_routes.route('/users', methods=['GET'])
 def list_users():

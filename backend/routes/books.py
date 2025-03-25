@@ -22,7 +22,7 @@ def handle_books():
             db.session.commit()
             return {"message": f"Book {book.name} has been created successfully."}
         else:
-            return {"error": "The request payload is not in JSON format"}
+            return {"error": "The request payload is not in JSON format."}
 
     elif request.method == 'GET':
         books = Book.query.all()
@@ -59,12 +59,15 @@ def update_book(book_id):
         for key, value in data.items():
             setattr(book, key, value)
         db.session.commit()
-        return {"message": f"Book {book.name} successfully updated"}
+        return {"message": f"Book {book.name} successfully updated."}
 
     elif request.method == 'DELETE':
-        db.session.delete(book)
-        db.session.commit()
-        return {"message": f"Book {book.name} successfully deleted."}
+        try:
+            db.session.delete(book)
+            db.session.commit()
+            return {"message": f"Book {book.name} successfully deleted."}
+        except:
+            return {"message": "Error while deleting book."}
     
 @book_routes.route('/books/available', methods=['GET'])
 def get_available_books():

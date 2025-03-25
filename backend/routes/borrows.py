@@ -10,30 +10,38 @@ borrow_routes = Blueprint('borrow', __name__)
 @borrow_routes.route('/borrows/new', methods=['POST'])
 def create_borrow():
     if request.is_json:
-        data = request.get_json()
-        borrow = Borrow(
-            user_id=data['user_id'],
-            book_id=data['book_id'],
-        )
-        db.session.add(borrow)
+        try:
+            data = request.get_json()
+            book = Book.query.get(data['book_id'])
+            if book.is_available == False:
+                return {"message": "Error: Cannot borrow a book unavailable."}
+            borrow = Borrow(
+                user_id=data['user_id'],
+                book_id=data['book_id'],
+            )
+            db.session.add(borrow)
 
-        book = Book.query.get(data['book_id'])
-        book.is_available = False
+            book.is_available = False
 
-        db.session.commit()
-        return {"message": f"Borrow {borrow.id} has been created successfully."}
+            db.session.commit()
+            return {"message": f"Borrow {borrow.id} has been created successfully."}
+        except:
+            return {"message": "Error while creating new borrow."}
     else:
-        return {"error": "The request payload is not in JSON format"}
+        return {"error": "The request payload is not in JSON format."}
 
 @borrow_routes.route('/borrows/return/<borrow_id>', methods=['DELETE'])
 def return_borrow(borrow_id):
-    borrow = Borrow.query.get_or_404(borrow_id)
-    book = Book.query.get(borrow.book_id)
+    try:
+        borrow = Borrow.query.get_or_404(borrow_id)
+        book = Book.query.get(borrow.book_id)
 
-    db.session.delete(borrow)
-    book.is_available = True
-    db.session.commit()
-    return {"message": f"Borrow {borrow.id} successfully deleted."}
+        db.session.delete(borrow)
+        book.is_available = True
+        db.session.commit()
+        return {"message": f"Borrow {borrow.id} successfully deleted."}
+    except:
+        return {"message": "Error while returning borrow."}
 
 @borrow_routes.route('/borrows', methods=['GET'])
 def current_borrows():

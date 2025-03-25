@@ -16,7 +16,7 @@ def handle_authors():
             db.session.commit()
             return {"message": f"Author {author.name} has been created successfully."}
         else:
-            return {"error": "The request payload is not in JSON format"}
+            return {"error": "The request payload is not in JSON format."}
 
     elif request.method == 'GET':
         authors = Author.query.all()
@@ -46,12 +46,15 @@ def update_author(author_id):
         for key, value in data.items():
             setattr(author, key, value)
         db.session.commit()
-        return {"message": f"Author {author.name} successfully updated"}
+        return {"message": f"Author {author.name} successfully updated."}
 
     elif request.method == 'DELETE':
-        db.session.delete(author)
-        db.session.commit()
-        return {"message": f"Author {author.name} successfully deleted."}
+        try:
+            db.session.delete(author)
+            db.session.commit()
+            return {"message": f"Author {author.name} successfully deleted."}
+        except:
+            return {"message": "Error while deleting author."}
     
 @author_routes.route('/authors/<author_id>/books', methods=['GET'])
 def search_book_by_author(author_id):
