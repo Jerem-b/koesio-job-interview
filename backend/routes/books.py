@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from sqlalchemy import or_
 from app import db
 from models.books import Book
+from models.authors import Author
 
 book_routes = Blueprint('books', __name__)
 
@@ -30,9 +31,8 @@ def handle_books():
             'id': book.id,
             'name': book.name,
             'author_id': book.author_id,
-            'author_name': book.author_name,
+            'author_name': book.author.name,
             'is_available': book.is_available,
-            'borrowed_by': book.borrowed_by,
             'type': book.type,
         } for book in books]
 
@@ -48,9 +48,8 @@ def update_book(book_id):
             'id': book.id,
             'name': book.name,
             'author_id': book.author_id,
-            'author_name': book.author_name,
+            'author_name': book.author.name,
             'is_available': book.is_available,
-            'borrowed_by': book.borrowed_by,
             'type': book.type,
         }
         return {"message": "Success", "book": response}
@@ -75,9 +74,8 @@ def get_available_books():
             'id': book.id,
             'name': book.name,
             'author_id': book.author_id,
-            'author_name': book.author_name,
+            'author_name': book.author.name,
             'is_available': book.is_available,
-            'borrowed_by': book.borrowed_by,
             'type': book.type,
         } for book in books]
 
@@ -92,7 +90,8 @@ def search_book():
         query = query.filter(or_(*[Book.name.ilike(f"%{name}%") for name in params['name']]))
 
     if 'author' in params:
-        query = query.filter(or_(*[Book.author_name.ilike(f"%{author}%") for author in params['author']]))
+        query = query.join(Author)
+        query = query.filter(or_(*[Author.name.ilike(f"%{author}%") for author in params['author']]))
 
     if 'type' in params:
         query = query.filter(or_(*[Book.type.ilike(f"%{type}%") for type in params['type']]))
@@ -103,9 +102,8 @@ def search_book():
             'id': book.id,
             'name': book.name,
             'author_id': book.author_id,
-            'author_name': book.author_name,
+            'author_name': book.author.name,
             'is_available': book.is_available,
-            'borrowed_by': book.borrowed_by,
             'type': book.type,
         } for book in books]
 

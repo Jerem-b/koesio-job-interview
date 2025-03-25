@@ -39,6 +39,13 @@ def list_users():
     {
         'id': user.id,
         'username': user.username,
+        'borrows': [
+            {
+                'id': borrow.id,
+                'book_id': borrow.book_id,
+                'user_id': borrow.user_id
+            } for borrow in user.borrows
+        ],
     } for user in users]
 
     return {"count": len(results), "users": results}
