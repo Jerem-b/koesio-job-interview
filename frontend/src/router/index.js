@@ -4,6 +4,7 @@ import Authors from '@/views/Authors.vue';
 import EditAuthor from '@/views/EditAuthor.vue';
 import Books from '@/views/Books.vue';
 import EditBook from '@/views/EditBook.vue';
+import Users from '@/views/Users.vue';
 
 const routes = [
   {
@@ -32,6 +33,11 @@ const routes = [
     name: 'edit-book',
     component: EditBook,
     props: true,
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    component: Users,
   },
 ];
 
