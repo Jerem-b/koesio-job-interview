@@ -5,6 +5,7 @@ import EditAuthor from '@/views/EditAuthor.vue';
 import Books from '@/views/Books.vue';
 import EditBook from '@/views/EditBook.vue';
 import Users from '@/views/Users.vue';
+import Borrows from '@/views/Borrows.vue';
 
 const routes = [
   {
@@ -38,6 +39,11 @@ const routes = [
     path: '/users',
     name: 'Users',
     component: Users,
+  },
+  {
+    path: '/borrows',
+    name: 'Borrows',
+    component: Borrows,
   },
 ];
 

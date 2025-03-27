@@ -51,6 +51,7 @@ def current_borrows():
             'id': borrow.id,
             'book_id': borrow.book_id,
             'user_id': borrow.user_id,
+            'user_name': borrow.user.username,
         } for borrow in borrows]
 
     return {"count": len(results), "borrows": results}
@@ -73,6 +74,7 @@ def search_borrows():
         {
             'id': borrow.id,
             'user_id': borrow.user_id,
+            'user_name': borrow.user.username,
             'book_id': borrow.book_id,
         } for borrow in borrows]
 

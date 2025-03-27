@@ -7,5 +7,6 @@
         <v-btn to="/authors" text>Authors</v-btn>
         <v-btn to="/books" text>Books</v-btn>
         <v-btn to="/users" text>Users</v-btn>
+        <v-btn to="/borrows" text>Borrows</v-btn>
     </v-app-bar>
 </template>
