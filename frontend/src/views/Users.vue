@@ -2,8 +2,8 @@
     <v-container class="d-flex flex-column align-center justify-center">
         <h1>Users</h1>
         <div>
-            <UserCreation/>
-            <UserList/>
+            <UserCreation />
+            <UserList />
         </div>
     </v-container>
 </template>

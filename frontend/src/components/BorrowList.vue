@@ -39,8 +39,8 @@ export default {
             try {
                 const response = await fetch(
                     `http://localhost:4000/borrows/return/${borrow_id}`, {
-                        method: "DELETE"
-                    }
+                    method: "DELETE"
+                }
                 );
                 if (!response.ok) throw new Error("Failed to return borrow");
                 await response.json();

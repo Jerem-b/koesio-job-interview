@@ -2,8 +2,8 @@
     <v-container class="d-flex flex-column align-center justify-center">
         <h1>Books</h1>
         <div>
-            <BookCreation/>
-            <BookList/>
+            <BookCreation />
+            <BookList />
         </div>
     </v-container>
 </template>

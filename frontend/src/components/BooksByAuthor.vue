@@ -16,17 +16,17 @@ export default {
     },
     props: ['authorName'],
     watch: {
-    authorName(newAuthorName) {
-      this.fetchBooksByAuthor(newAuthorName);
-    }
-  },
+        authorName(newAuthorName) {
+            this.fetchBooksByAuthor(newAuthorName);
+        }
+    },
     methods: {
         async fetchBooksByAuthor(authorName) {
             try {
                 const response = await fetch(`http://localhost:4000/books/search?author=${authorName}`);
                 if (!response.ok) throw new Error("Error fetching books");
-                    const data = await response.json();
-                    this.books = data.books;
+                const data = await response.json();
+                this.books = data.books;
             } catch (error) {
                 console.error("Search failed:", error);
                 this.books = [];

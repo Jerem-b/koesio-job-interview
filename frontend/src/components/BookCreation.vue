@@ -1,15 +1,10 @@
 <template>
     <v-container>
         <v-form @submit.prevent="createBook">
-            <v-text-field v-model="book.name" label="Book name"/>
-            <v-select
-                v-model="book.author_id" 
-                :items="authors"
-                item-text="name"
-                item-value="id"
-                label="Select Author"
-                required/>
-            <v-text-field v-model="book.type" label="Book type"/>
+            <v-text-field v-model="book.name" label="Book name" />
+            <v-select v-model="book.author_id" :items="authors" item-text="name" item-value="id" label="Select Author"
+                required />
+            <v-text-field v-model="book.type" label="Book type" />
             <v-btn class="mt-2" color="primary" type="submit" block>Create Book</v-btn>
         </v-form>
     </v-container>

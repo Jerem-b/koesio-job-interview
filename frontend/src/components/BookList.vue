@@ -7,8 +7,8 @@
         </template>
         <v-card-text>{{ book.type }}</v-card-text>
         <v-card-actions>
-            <v-btn append-icon="mdi-pen" color="orange-lighten-2" variant="text" @click="editBook(book.id)"/>
-            <v-btn append-icon="mdi-delete" color="red-lighten-2" variant="text" @click="deleteBook(book.id)"/>
+            <v-btn append-icon="mdi-pen" color="orange-lighten-2" variant="text" @click="editBook(book.id)" />
+            <v-btn append-icon="mdi-delete" color="red-lighten-2" variant="text" @click="deleteBook(book.id)" />
         </v-card-actions>
     </v-card>
 </template>
@@ -36,8 +36,8 @@ export default {
             try {
                 const response = await fetch(
                     `http://localhost:4000/books/${book_id}`, {
-                        method: "DELETE"
-                    }
+                    method: "DELETE"
+                }
                 );
                 if (!response.ok) throw new Error("Failed to delete book");
                 await response.json();

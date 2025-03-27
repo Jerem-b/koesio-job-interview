@@ -2,8 +2,8 @@
     <v-container class="d-flex flex-column align-center justify-center">
         <h1>Borrows</h1>
         <div>
-            <BorrowCreation/>
-            <BorrowList/>
+            <BorrowCreation />
+            <BorrowList />
         </div>
     </v-container>
 </template>

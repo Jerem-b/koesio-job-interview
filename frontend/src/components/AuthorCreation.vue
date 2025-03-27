@@ -23,12 +23,12 @@ export default {
                 try {
                     const response = await fetch(
                         'http://localhost:4000/authors', {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify(authorData),
-                        }
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(authorData),
+                    }
                     );
                     if (!response.ok) throw new Error("Failed to create author");
                     await response.json();
