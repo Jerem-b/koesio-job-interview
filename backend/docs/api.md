@@ -1,6 +1,6 @@
 ## API Documentation
 Notes:
-- To connect to the API there are no credentials required.
+- No credentials are required.
 - To access the API go to localhost:4000
 
 ---
@@ -595,7 +595,7 @@ Each borrow object contains:
 | `book_id` | int    | The ID of the borrowed book        |
 | `user_id` | int    | The ID of the user who borrowed it |
 
-### Example Response:
+### Response:
 ✅ 200 OK (Success)
 ```json
 {
@@ -619,3 +619,139 @@ Each borrow object contains:
     }
   ]
 }
+```
+---
+# Borrows
+
+## 📥 Create a New Borrow
+
+### `POST /borrows/new`
+**Description:**
+Creates a new borrow record when a user borrows a book. 
+
+### Request Body:
+| Parameter | Type   | Required | Description                |
+|-----------|--------|----------|----------------------------|
+| `user_id` | int | ✅ Yes    | The id of the user   |
+| `book_id` | int | ✅ Yes    | The id of the book   |
+
+### Responses:
+✅ 200 OK (Success)
+```json
+{
+  "message": "Borrow 1 has been created successfully."
+}
+```
+❌ 400 Bad Request (Invalid JSON)
+```json
+{
+  "error": "The request payload is not in JSON format."
+}
+```
+❌ 400 Bad Request (Unavailable Book)
+```json
+{
+  "error": "Error: Cannot borrow a book unavailable."
+}
+```
+❌ 500 Internal Server Error
+```json
+{
+  "error": "An unexpected error occurred."
+}
+```
+
+## 🔙 Retrun a Borrow
+
+### `DELETE /borrows/return/{borrow_id}`
+**Description:**
+Marks a borrowed book as returned and makes it available for others to borrow. 
+
+### Request Parameters:
+| Parameter   | Type   | Required | Description             |
+|-------------|--------|----------|-------------------------|
+| `borrow_id` | integer| ✅       | The ID of the borrow record to return |
+
+### Responses:
+✅ 200 OK (Success)
+```json
+{
+  "message": "Borrow 1 successfully deleted."
+}
+```
+❌ 400 Bad Request (Invalid JSON)
+```json
+{
+  "message": "Error while returning borrow."
+}
+```
+❌ 404 Not Found
+```json
+{
+  "message": "Error while returning borrow."
+}
+```
+
+## 📚 Current Borrows
+### `GET /borrows`
+
+**Description:**
+Fetches a list of all current borrow records.
+
+### Responses:
+✅ 200 OK (Success)
+```json
+{
+  "count": 5,
+  "borrows": [
+    {
+      "id": 1,
+      "book_id": 101,
+      "user_id": 2,
+      "user_name": "John Doe"
+    },
+    {
+      "id": 2,
+      "book_id": 102,
+      "user_id": 3,
+      "user_name": "Jane Smith"
+    }
+  ]
+}
+```
+
+## 🔍 Search Borrows
+### `GET /borrows/search`
+
+**Description:**
+Searches for borrow records based on book and/or user criteria.
+
+### 📦 Query Parameters
+
+| Parameter | Type   | Description                       |
+|-----------|--------|-----------------------------------|
+| `book`    | string | The name (or partial name) of the book to search for. |
+| `user`    | string | The username of the user to search for. |
+
+### Responses:
+✅ 200 OK (Success)
+```json
+{
+  "count": 2,
+  "borrows": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "user_name": "John Doe",
+      "book_id": 101
+    },
+    {
+      "id": 2,
+      "user_id": 3,
+      "user_name": "Jane Smith",
+      "book_id": 102
+    }
+  ]
+}
+
+```
