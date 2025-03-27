@@ -481,3 +481,141 @@ Search for books based on name, author, or type.
   "books": []
 }
 ```
+
+---
+# Users
+## 👤 User Creation
+### `POST /register`
+
+**Description:**
+Creates a new user account and stores it in the database. The user provides a username and password. The password is hashed before being stored for security purposes.
+
+### Request Body:
+| Parameter | Type   | Required | Description                |
+|-----------|--------|----------|----------------------------|
+| `username` | string | ✅ Yes    | The username of the user   |
+| `password` | string | ✅ Yes    | The password of the user   |
+
+### Example Request:
+```json
+{
+  "username": "john_doe",
+  "password": "securePassword123"
+}
+```
+### Responses:
+✅ 200 OK (Success)
+```json
+{
+  "message": "User john_doe has been created successfully."
+}
+```
+❌ 400 Bad Request (Invalid JSON)
+```json
+{
+  "error": "The request payload is not in JSON format."
+}
+```
+❌ 500 Internal Server Error
+```json
+{
+  "error": "An unexpected error occurred."
+}
+```
+
+## 🔑 User Login
+### `POST /login`
+
+**Description:**
+Logs in a user by verifying their username and password. The password is checked against the stored hashed password in the database.
+
+### Request Body:
+| Parameter | Type   | Required | Description                |
+|-----------|--------|----------|----------------------------|
+| `username` | string | ✅ Yes    | The username of the user   |
+| `password` | string | ✅ Yes    | The password of the user   |
+
+### Example Request:
+```json
+{
+  "username": "john_doe",
+  "password": "securePassword123"
+}
+```
+
+### Responses:
+✅ 200 OK (Success)
+```json
+{
+  "message": "User john_doe successfully login."
+}
+```
+❌ 400 Bad Request (Invalid JSON)
+```json
+{
+  "error": "The request payload is not in JSON format."
+}
+```
+❌ 401 Unauthorized (Invalid Credentials)
+```json
+{
+  "error": "Invalid username or password."
+}
+```
+❌ 500 Internal Server Error
+```json
+{
+  "error": "An unexpected error occurred."
+}
+```
+
+## 👥 List Users
+### `GET /users`
+
+**Description:**
+Retrieves a list of all users in the system, including their borrows.
+
+### Response:
+| Parameter  | Type   | Description                                       |
+|------------|--------|---------------------------------------------------|
+| `count`    | int    | The number of users returned                      |
+| `users`    | array  | A list of users, each containing their borrowings |
+
+Each user object contains:  
+| Parameter   | Type   | Description                                  |
+|------------|--------|----------------------------------------------|
+| `id`       | int    | The unique ID of the user                   |
+| `username` | string | The username of the user                    |
+| `borrows`  | array  | A list of books the user has borrowed       |
+
+Each borrow object contains:  
+| Parameter  | Type   | Description                         |
+|-----------|--------|-------------------------------------|
+| `id`      | int    | The unique ID of the borrow record |
+| `book_id` | int    | The ID of the borrowed book        |
+| `user_id` | int    | The ID of the user who borrowed it |
+
+### Example Response:
+✅ 200 OK (Success)
+```json
+{
+  "count": 2,
+  "users": [
+    {
+      "id": 1,
+      "username": "john_doe",
+      "borrows": [
+        {
+          "id": 101,
+          "book_id": 5,
+          "user_id": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "username": "jane_doe",
+      "borrows": []
+    }
+  ]
+}
